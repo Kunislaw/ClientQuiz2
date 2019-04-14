@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller{
     private Socket socket;
@@ -18,38 +20,33 @@ public class Controller{
     private OutputStream outputStream;
     private ObjectOutputStream objectOutputStream;
     @FXML
-    void initialize() {
-        try {
-            socket = new Socket();
-            address = new InetSocketAddress("localhost", 6000);
-            socket.connect(address, 2500);
-            outputStream = socket.getOutputStream();
-            objectOutputStream = new ObjectOutputStream(outputStream);
-            System.out.println("Polaczenie nawiazane");
-        } catch (Exception e) {
-            System.out.println("Nie udało się nawiązać połączenia\nPowód: " + e.getMessage());
-        }
-    }
-
-    @FXML
     private Button send_button;
     @FXML
     private TextField nick_text;
     @FXML
     private TextField answer_text;
     @FXML
+    void initialize() {
+
+    }
+
+
+    @FXML
     void ActionHandler(ActionEvent actionEvent){
         if(actionEvent.getSource() == send_button) { button(); }
     }
     void button(){
-        Answer answer = new Answer(nick_text.getText(),answer_text.getText());
-        System.out.println(answer);
-        try{
-            objectOutputStream.writeObject(answer);
-        }
-        catch(Exception e)
-        {
-            System.out.println("Bład:\n"+e.getMessage());
+        try {
+            socket = new Socket();//tworzymy socket
+            address = new InetSocketAddress("localhost", 6000);
+            socket.connect(address, 2500);//laczymy sie
+            outputStream = socket.getOutputStream();//nowy output stream
+            objectOutputStream = new ObjectOutputStream(outputStream); //do przesylania obiektow
+            Answer answer = new Answer(nick_text.getText(),answer_text.getText());//tworzymy obiekt klasy Answer
+            objectOutputStream.writeObject(answer);//i wysylamy go
+            socket.close();//zamykamy polaczenie
+        } catch (Exception e) {
+            System.out.println("Nie udało się nawiązać połączenia\nPowód: " + e.getMessage());
         }
     }
 }

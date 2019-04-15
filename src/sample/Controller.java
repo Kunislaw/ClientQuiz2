@@ -25,11 +25,6 @@ public class Controller{
     private TextField nick_text;
     @FXML
     private TextField answer_text;
-    @FXML
-    void initialize() {
-
-    }
-
 
     @FXML
     void ActionHandler(ActionEvent actionEvent){
